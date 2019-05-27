@@ -5,7 +5,7 @@ import (
 
 
 
-	"github.com/PranavBakre/Golang/tree/master/BinaryTree/src/BinarySearchTree"
+	"./src/BinarySearchTree"
 )
 
 func main() {
