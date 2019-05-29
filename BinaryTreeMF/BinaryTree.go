@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"time"
+	//"time"
 	"./src/BinaryTree"
+	//"os/exec"
 )
 
 func main() {
 	var bst BinaryTree.BST
-	var key string
+	var key,exit string
 	bst.CreateNR()
 	bst.InNRdisplay()
 	fmt.Println()
@@ -34,5 +35,7 @@ func main() {
 	bst2.MirrorNR()
 	bst2.InNRdisplay()
 	fmt.Println()
-	time.Sleep(5*time.Second)
+	fmt.Println("Press Enter to exit\n")
+	fmt.Scanln(&exit)
+
 }
