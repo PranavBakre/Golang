@@ -2,9 +2,7 @@ package main
 
 import (
 	"fmt"
-
-
-
+	"time"
 	"./src/BinarySearchTree"
 )
 
@@ -36,4 +34,5 @@ func main() {
 	bst2.MirrorNR()
 	bst2.InNRdisplay()
 	fmt.Println()
+	time.Sleep(5*time.Second)
 }
