@@ -1,24 +1,24 @@
 package main
 
 import (
-	"fmt"
-	"syscall"
 	"./src/BinaryTree"
+	"fmt"
 	"os"
+	"syscall"
 )
 
 func main() {
 
-	fd,err:=os.Open("test.txt")
-	if err!=nil {
+	fd, err := os.Open("test.txt")
+	if err != nil {
 		os.Create("test.txt")
-		syscall.Exec("/bin/gnome-terminal",[]string{"gnome-terminal","--","go","run","BinaryTree.go"},os.Environ())
-	}else{
+		syscall.Exec("/bin/gnome-terminal", []string{"gnome-terminal", "--", "go", "run", "BinaryTree.go"}, os.Environ())
+	} else {
 		fd.Close()
 		os.Remove("test.txt")
 	}
 	var bst BinaryTree.BST
-	var key,exit string
+	var key, exit string
 	bst.CreateNR()
 	bst.InNRdisplay()
 	fmt.Println()
