@@ -12,7 +12,7 @@ func main() {
 	fd,err:=os.Open("test.txt")
 	if err!=nil {
 		os.Create("test.txt")
-		syscall.Exec("/bin/gnome-terminal",[]string{"gnome-terminal","-e","go run BinaryTree.go"},os.Environ())
+		syscall.Exec("/bin/gnome-terminal",[]string{"gnome-terminal","--","go","run","BinaryTree.go"},os.Environ())
 	}else{
 		fd.Close()
 		os.Remove("test.txt")
