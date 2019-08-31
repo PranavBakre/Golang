@@ -6,8 +6,8 @@ import (
 )
 
 type Node struct { //Contents of every node
-	Distance []int
-	Next     []int
+	Distance  []int
+	Next      []int
 	Neighbour []int
 }
 
