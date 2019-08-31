@@ -5,13 +5,18 @@ import (
 	"sync"
 )
 
+type Node struct {
+	Distance []int
+	Next     []int
+}
+
 type Graph struct {
 	NodeNumber      int
-	Graph           [][]int
-	Update          [][]int
-	InitData        [][]int
-	Neighbour       [][]int
+	Graph           []Node
+	Update          []Node
+	InitData        []Node
 	IsUpdatePresent []bool
+	Neighbour       [][]int
 }
 
 func (G *Graph) Init() {
@@ -19,22 +24,25 @@ func (G *Graph) Init() {
 	fmt.Scanln(&G.NodeNumber)
 	fmt.Println(G.NodeNumber)
 
-	G.Graph = make([][]int, G.NodeNumber)
-	G.InitData = make([][]int, G.NodeNumber)
-	G.Update = make([][]int, G.NodeNumber)
-	G.Neighbour = make([][]int, G.NodeNumber)
+	G.Graph = make([]Node, G.NodeNumber)
+	G.InitData = make([]Node, G.NodeNumber)
+	G.Update = make([]Node, G.NodeNumber)
 	G.IsUpdatePresent = make([]bool, G.NodeNumber)
-
+	G.Neighbour = make([][]int, G.NodeNumber)
 	for i := 0; i < G.NodeNumber; i++ {
-		G.Graph[i] = make([]int, G.NodeNumber)
-		G.Update[i] = make([]int, G.NodeNumber)
+		G.Graph[i].Distance = make([]int, G.NodeNumber)
+		G.Update[i].Distance = make([]int, G.NodeNumber)
 		G.Neighbour[i] = make([]int, G.NodeNumber)
-		G.InitData[i] = make([]int, G.NodeNumber)
+		G.InitData[i].Distance = make([]int, G.NodeNumber)
+		G.Graph[i].Next = make([]int, G.NodeNumber)
+		G.Update[i].Next = make([]int, G.NodeNumber)
+		G.InitData[i].Next = make([]int, G.NodeNumber)
 	}
 	for i := 0; i < G.NodeNumber; i++ {
 		for j := 0; j < G.NodeNumber; j++ {
-			G.Graph[i][j] = -1
-			G.Update[i][j] = 999
+			G.Graph[i].Distance[j] = -1
+			G.Graph[i].Next[j] = -1
+			G.Update[i].Distance[j] = 999
 		}
 	}
 
@@ -44,21 +52,27 @@ func (G *Graph) Init() {
 func (G *Graph) AddData() {
 	fmt.Println("Enter the Distance between the nodes. 99 for infinity")
 	for i := 0; i < G.NodeNumber; i++ {
+
 		for j := 0; j < G.NodeNumber; j++ {
+
 			if i == j {
-				G.Graph[i][j] = 0
-				G.Graph[j][i] = 0
+				G.Graph[i].Distance[j] = 0
+				G.Graph[j].Distance[i] = 0
 			}
-			if G.Graph[i][j] == -1 {
+
+			if G.Graph[i].Distance[j] == -1 {
 				fmt.Println("Node", i, "and", j, ": ")
-				fmt.Scanln(&G.Graph[i][j])
-				G.Graph[j][i] = G.Graph[i][j]
-				if G.Graph[i][j] != 999 {
+				fmt.Scanln(&G.Graph[i].Distance[j])
+				G.Graph[j].Distance[i] = G.Graph[i].Distance[j]
+				if G.Graph[i].Distance[j] != 999 {
 					G.Neighbour[i][j] = 1
 					G.Neighbour[j][i] = G.Neighbour[i][j]
+					G.Graph[i].Next[j] = j
+					G.Graph[j].Next[i] = i
 				}
 			}
-			G.InitData[i][j] = G.Graph[i][j]
+			G.InitData[i].Distance[j] = G.Graph[i].Distance[j]
+			G.InitData[i].Next[j] = G.Graph[i].Next[j]
 		}
 	}
 
@@ -73,8 +87,9 @@ func (G *Graph) Display() {
 
 func (G *Graph) UpdateData(Node int) {
 	for i := 0; i < G.NodeNumber; i++ {
-		if i != Node && G.Graph[Node][i] > G.Update[Node][i] {
-			G.Graph[Node][i] = G.Update[Node][i]
+		if i != Node && G.Graph[Node].Distance[i] > G.Update[Node].Distance[i] {
+			G.Graph[Node].Distance[i] = G.Update[Node].Distance[i]
+			G.Graph[Node].Next[i] = G.Update[Node].Next[i]
 		}
 	}
 	G.IsUpdatePresent[Node] = false
@@ -83,9 +98,10 @@ func (G *Graph) UpdateData(Node int) {
 func (G *Graph) SendData(wg *sync.WaitGroup, Sender int, Node int) {
 	for i := 0; i < G.NodeNumber; i++ {
 		if i != Node {
-			v := G.Graph[Sender][i] + G.Graph[Sender][Node]
-			if v < G.Update[Node][i] {
-				G.Update[Node][i] = v
+			v := G.Graph[Sender].Distance[i] + G.Graph[Sender].Distance[Node]
+			if v < G.Update[Node].Distance[i] {
+				G.Update[Node].Distance[i] = v
+				G.Update[Node].Next[i] = Sender
 				G.IsUpdatePresent[Node] = true
 			}
 		}
@@ -134,11 +150,15 @@ func (G *Graph) ChangeData() {
 	fmt.Scanln(&i, &j, &c)
 	G.Graph = G.InitData
 
-	G.Graph[i][j] = c
-	G.Graph[j][i] = c
+	G.Graph[i].Distance[j] = c
+	G.Graph[j].Distance[i] = c
+	if c != 999 {
+		G.Graph[i].Next[j] = j
+		G.Graph[j].Next[i] = i
+	}
 	for ii := 0; ii < G.NodeNumber; ii++ {
 		for jj := 0; jj < G.NodeNumber; jj++ {
-			G.Update[ii][jj] = 999
+			G.Update[ii].Distance[jj] = 999
 		}
 	}
 }
