@@ -8,7 +8,6 @@ import (
 type Node struct { //Contents of every node
 	Distance []int
 	Next     []int
-	//Add Neighbour to Node
 	Neighbour []int
 }
 
@@ -18,7 +17,6 @@ type Graph struct { //Network Map
 	Update          []Node
 	InitData        []Node
 	IsUpdatePresent []bool
-	//Neighbour       [][]int
 }
 
 func (G *Graph) Init() { //Initialises the network map
