@@ -8,6 +8,7 @@ import (
 type Node struct {
 	Distance []int
 	Next     []int
+	//Add Neighbour to Node
 }
 
 type Graph struct {
