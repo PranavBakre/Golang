@@ -3,6 +3,7 @@ package graph
 import (
 	"fmt"
 	"sync"
+	//	"text/scanner"
 )
 
 type Node struct { //Contents of every node
@@ -166,19 +167,26 @@ func (G *Graph) Run() { //Emulate the running of distance vector
 
 func (G *Graph) ChangeData() { //Change the data of the nodes to indicate broken connection
 	var i, j, c int
-	fmt.Println("Enter the nodes and new cost")
-	fmt.Scanln(&i, &j, &c)
+
+	var choice = "y"
 	for i := 0; i < G.NodeNumber; i++ {
 		G.Graph[i].Distance = G.Graph[i].InitDistance
 		G.Graph[i].Next = G.Graph[i].InitNext
 		G.Graph[i].Neighbour = G.Graph[i].InitNeighbour
 	}
-
-	G.Graph[i].Distance[j] = c
-	G.Graph[j].Distance[i] = c
-	if c != 999 {
-		G.Graph[i].Next[j] = j
-		G.Graph[j].Next[i] = i
+	for choice == "y" {
+		fmt.Println("Enter the nodes and new cost")
+		fmt.Scanln(&i, &j, &c)
+		if i != j {
+			G.Graph[i].Distance[j] = c
+			G.Graph[j].Distance[i] = c
+			if c != 999 {
+				G.Graph[i].Next[j] = j
+				G.Graph[j].Next[i] = i
+			}
+		}
+		fmt.Println("Enter another value? y/n")
+		fmt.Scanln(&choice)
 	}
 	for ii := 0; ii < G.NodeNumber; ii++ {
 		for jj := 0; jj < G.NodeNumber; jj++ {
